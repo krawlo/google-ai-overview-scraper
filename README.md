@@ -1,173 +1,211 @@
-# Google AI Overview Scraper Service
+<div align="center">
 
-A high-performance, commercial-grade Google AI Overview scraper service designed to compete with Apify's \$3/1k pricing model (targeting ~\$0.85/1k + pass-through user proxy costs).
+<img src="https://raw.githubusercontent.com/krawlo/google-ai-overview-scraper/main/.actor/actor.png" width="120" height="120" alt="Google AI Overview Scraper Logo" style="border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg'" />
 
-Built in Python using **direct HTTP/2 BoringSSL TLS/JA3/JA4 emulation (`curl_cffi`)**, multi-tier resilient DOM/JSON parsing, thread-safe proxy pooling, token-bucket rate limiting, and a FastAPI REST service.
+# Google AI Overview Scraper
+### High-Performance Extraction for Google Generative AI Search & Citations
 
----
+[![Apify Actor](https://img.shields.io/badge/Apify-Actor%20Live-brightgreen?style=for-the-badge&logo=apify)](https://console.apify.com/actors/1h25O4JWQ1GmOdMf6)
+[![Standby Mode](https://img.shields.io/badge/Standby-Sub--Second%20Latency-blue?style=for-the-badge)](https://krawlo--google-ai-overview-scraper.apify.actor)
+[![Camoufox Stealth](https://img.shields.io/badge/Stealth-Camoufox%20Engine-orange?style=for-the-badge)](https://console.apify.com/actors/1h25O4JWQ1GmOdMf6)
+[![Protocol](https://img.shields.io/badge/Protocol-REST%20%7C%20FastAPI%20%7C%20Batch-purple?style=for-the-badge)](https://console.apify.com/actors/1h25O4JWQ1GmOdMf6)
 
-## Architecture Overview
+[**🚀 Try Live on Apify Console**](https://console.apify.com/actors/1h25O4JWQ1GmOdMf6) • [**⚡ Live Standby Server Endpoint**](https://krawlo--google-ai-overview-scraper.apify.actor) • [**💻 GitHub Repository**](https://github.com/krawlo/google-ai-overview-scraper)
 
-```
-google-ai/
-├── app/
-│   ├── api/                     # FastAPI REST API & Routing
-│   │   ├── __init__.py
-│   │   └── routes.py            # /health, /v1/scrape, /v1/scrape/batch, /v1/jobs/{id}
-│   ├── config.py                # Environment & Settings (Pydantic V2)
-│   ├── main.py                  # Service entrypoint & lifespan manager
-│   ├── models/                  # Pydantic Schemas & Types
-│   │   ├── common.py            # Enums: BlockType, JobStatus, DeviceType
-│   │   ├── request.py           # ScrapeRequest, BatchScrapeRequest
-│   │   └── response.py          # AIOverviewData, SourceCitation, ScrapeResponse
-│   ├── scraper/                 # BoringSSL Direct HTTP/2 Engine
-│   │   ├── client.py            # Dual-stage extractor with /async/folsrch
-│   │   ├── cookies.py           # Protobuf Google SOCS consent cookie generator
-│   │   ├── detector.py          # Bot detection & CAPTCHA interception
-│   │   └── headers.py           # Chrome 131 Client Hints & Fetch Metadata
-│   ├── parser/                  # 5-Tier Resilient AI Overview Parser
-│   │   ├── aio_parser.py        # Pipeline orchestrator
-│   │   ├── base.py              # Strategy interfaces
-│   │   ├── normalizer.py        # Text & Google /url?q= unquoting
-│   │   ├── selectors.py         # 5-tier selector definitions
-│   │   └── strategies.py        # Semantic, Anchor, SERP, Class & Script strategies
-│   ├── proxy/                   # Proxy Pool & Health Management
-│   │   ├── manager.py           # Round-robin, least-used, circuit-breaker
-│   │   └── node.py              # Thread-safe proxy nodes (HTTP/SOCKS5)
-│   └── concurrency/             # Concurrency & Batch Engine
-│       ├── job_store.py         # Async in-memory batch job store
-│       ├── rate_limiter.py      # Async Token Bucket rate limiter
-│       └── worker_pool.py       # Semaphore-bounded worker pool
-├── tests/                       # 293 Automated Tests
-│   ├── e2e/                     # 4-tier E2E test harness (87 tests)
-│   │   ├── test_tier1_features.py
-│   │   ├── test_tier2_boundaries.py
-│   │   ├── test_tier3_combinations.py
-│   │   └── test_tier4_scenarios.py
-│   ├── conftest.py              # Mock Google SERP fixtures & test app
-│   ├── test_client.py           # Scraper engine tests (35 tests)
-│   ├── test_models.py           # Pydantic schema tests (116 tests)
-│   ├── test_parser.py           # Parser engine tests (44 tests)
-│   └── test_proxy.py            # Proxy pool tests (11 tests)
-├── requirements.txt
-├── pyproject.toml
-└── .env.example
-```
+**The most affordable, resilient, and accurate Google AI Overview scraper on the market.**  
+Extract official generative AI overview answers, structured bullet summaries, and clean multi-source citations with direct destination URLs without paying exorbitant marketplace fees.
+
+</div>
 
 ---
 
-## Key Features
+## 🔗 Quick Links
 
-1. **Direct HTTP/2 BoringSSL TLS Fingerprinting (`curl_cffi`)**:
-   * Emulates authentic Google Chrome 131 JA3/JA4 TLS signatures and HTTP/2 settings frames without the massive compute/memory footprint of headless browsers.
-2. **Dual-Stage Extraction**:
-   * Captures initial search response and automatically handles Google's dynamic `/async/folsrch` endpoint for deferred AI Overview payloads.
-3. **Protobuf SOCS Consent Cookie Engine**:
-   * Uses binary protobuf varint serialization to generate valid Google `SOCS` consent cookies, preventing European and worldwide consent interstitals.
-4. **5-Tier Resilient Extraction Pipeline**:
-   * Falls back gracefully across Semantic attributes (`data-attrid`), Text Anchors, Structural SERP containers, Obfuscated classes, and Embedded script tags.
-5. **Pass-Through & Managed Proxy Pool**:
-   * Supports user-supplied HTTP/HTTPS/SOCKS5 proxies with automated health checks, sticky sessions, latency tracking, and cooldown on 429/banned nodes.
-6. **Commercial Economics**:
-   * Lightweight footprint allows executing thousands of queries per minute for ~\$0.85/1k platform cost plus pass-through proxy bandwidth.
+| Platform | Resource Link | Description |
+| :--- | :--- | :--- |
+| **Apify Store** | [krawlo/google-ai-overview-scraper](https://console.apify.com/actors/1h25O4JWQ1GmOdMf6) | Official managed cloud Actor with batch scraping & automatic proxy rotation. |
+| **Live Standby API** | [krawlo--google-ai-overview-scraper.apify.actor](https://krawlo--google-ai-overview-scraper.apify.actor) | Dedicated sub-second HTTP/REST web server with zero cold-starts. |
+| **GitHub Repo** | [krawlo/google-ai-overview-scraper](https://github.com/krawlo/google-ai-overview-scraper) | Source code, 5-tier parsing engine, and local FastAPI runner. |
 
 ---
 
-## Quickstart
+## ⚡ Why Use This Actor?
 
-### 1. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Run Tests
-```bash
-python -m pytest tests/
-```
-All **293 / 293 tests** pass in ~7 seconds.
-
-### 3. Start the REST API Service
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
+- 🚀 **Sub-Second Standby Mode:** Supports Apify Standby mode for instant, real-time HTTP queries without cold starts.
+- 🎯 **Full Content Synthesis:** Captures leading summary paragraphs, hierarchical headings, and true content bullet points.
+- 🔗 **Clean Source Attribution:** Extracts real destination URLs and publication titles from Google's embedded client data (stripping internal tracking redirects).
+- 💰 **Unbeatable Pricing:** Targets **<$1.00 / 1,000 queries** compared to the $3.00+/1k standard marketplace price.
+- 🛡️ **Anti-Bot Stealth Engine:** Camoufox browser integration with hardware canvas spoofing, WebGL randomization, and automatic residential proxy session rotation (`session-{hex}`).
 
 ---
 
-## API Endpoints
+## 💎 Transparent, Developer-Friendly Pricing
 
-### `GET /health`
-Returns service status, version, and proxy pool health.
-```json
-{
-  "status": "healthy",
-  "version": "0.1.0",
-  "proxy_count": 0,
-  "proxies_available": 0
+Pay only for what you query. No expensive monthly minimums, no lock-in, and full platform usage transparency:
+
+| Plan / Tier | Price | Included Queries | Cost Per Query | Best For |
+| :--- | :--- | :--- | :--- | :--- |
+| **Starter** | **$0.85 + usage** | **1,000 Queries** | **$0.00085** | Prototypes, research & niche tracking |
+| **Growth** | **$3.20 + usage** | **4,000 Queries** | **$0.00080** | SEO tools, content intelligence & monitoring |
+| **Scale** | **$7.50 + usage** | **10,000 Queries** | **$0.00075** | Enterprise search intelligence & LLM pipelines |
+
+> 💡 **Why this is unbeatable:** Standard Google SERP and AI Overview scrapers on Apify charge **$3.00 to $5.00 per 1,000 queries**. Our Actor delivers **70%+ cost savings** with cleaner bullet breakdowns, verified sources, and automatic residential IP failover.
+
+---
+
+## 🎯 What You Can Query
+
+### 1. 🤖 Full Generative Overview Text (`ai_overview_text`)
+Extract the complete text synthesis generated by Google:
+- High-level intro paragraph before any list items.
+- Structured section headings (e.g. *Key Benefits*, *Important Caveats*).
+- Footnote indicator tags (`+1`, `+2`) cleanly removed from narrative prose.
+
+### 2. 📝 Structured Bullet List (`bullet_points`)
+Cleanly separated bullet points formatted for direct programmatic consumption:
+- Eliminates interactive carousel previews, repeated domain fragments, and follow-up prompts (*"Your primary goal..."*).
+- Ideal for feeding into downstream LLM pipelines, RAG systems, or summaries.
+
+### 3. 🌐 Markdown Representation (`ai_overview_markdown`)
+Pre-formatted GitHub Flavored Markdown ready for instant display:
+- Fully styled with bold key terms, Markdown bullet lists, and numbered source links with domain attributions.
+
+### 4. 📚 Real Source Citations (`sources`)
+Rich, verified list of publishers cited in the generative overview:
+- `title`: Actual publication title (e.g. *Mayo Clinic*, *Harvard T.H. Chan School of Public Health*).
+- `url`: Direct canonical destination URL without tracking wrappers.
+- `domain`: Clean host domain (e.g. *www.mayoclinic.org*).
+
+---
+
+## 🛠️ How to Use
+
+### Option 1: Run via Apify Console UI
+1. Open the [Actor in Apify Console](https://console.apify.com/actors/1h25O4JWQ1GmOdMf6).
+2. Enter your **Search Queries** (e.g. `["what are the benefits of intermittent fasting"]`).
+3. Select your desired language (`hl`) and country (`gl`).
+4. Click **Start** to run and inspect the results in the Dataset tab or export as JSON/CSV/Excel.
+
+---
+
+### Option 2: Call via Python (`apify-client`)
+
+```python
+from apify_client import ApifyClient
+
+client = ApifyClient("YOUR_APIFY_API_TOKEN")
+
+# Example: Scrape Google AI Overview for health query
+run_input = {
+    "queries": ["what are the benefits of intermittent fasting"],
+    "country": "us",
+    "language": "en",
+    "maxConcurrency": 3
 }
+
+# Run the Actor and fetch results
+run = client.actor("krawlo/google-ai-overview-scraper").call(run_input=run_input)
+for item in client.dataset(run["defaultDatasetId"]).iterate_items():
+    print(f"Query: {item['query']} | Has AIO: {item['has_ai_overview']}")
+    print(f"Summary: {item['ai_overview_text'][:200]}...")
+    print(f"Citations: {len(item['sources'])} sources extracted")
 ```
 
-### `POST /v1/scrape`
-Synchronous single-query scrape.
+---
+
+### Option 3: Call via Node.js / JavaScript
+
+```javascript
+import { ApifyClient } from 'apify-client';
+
+const client = new ApifyClient({
+    token: 'YOUR_APIFY_API_TOKEN',
+});
+
+// Example: Query Google AI Overview
+const input = {
+    queries: ["symptoms of dehydration", "how to boil an egg"],
+    country: "us",
+    language: "en"
+};
+
+const run = await client.actor("krawlo/google-ai-overview-scraper").call(input);
+const { items } = await client.dataset(run.defaultDatasetId).listItems();
+console.log(`Scraped ${items.length} queries successfully:`);
+console.table(items);
+```
+
+---
+
+### Option 4: Instant cURL / REST API
+
+```bash
+curl --request POST   --url "https://api.apify.com/v2/acts/krawlo~google-ai-overview-scraper/run-sync-get-dataset-items?token=YOUR_API_TOKEN"   --header "Content-Type: application/json"   --data '{
+    "queries": ["what are the benefits of intermittent fasting"],
+    "country": "us",
+    "language": "en"
+  }'
+```
+
+---
+
+## 📊 Sample Output
+
 ```json
-// Request
 {
   "query": "what are the benefits of intermittent fasting",
-  "language": "en",
-  "country": "us",
-  "device": "desktop",
-  "proxy_url": "http://user:pass@proxy.example.com:8000" // optional
-}
+  "has_ai_overview": true,
+  "ai_overview_text": "Intermittent fasting may support weight loss, improve metabolic and heart markers, and reduce inflammation, though long-term human evidence is still evolving and effects often match general calorie restriction.
 
-// Response
-{
-  "job_id": "00000000-0000-0000-0000-000000000000",
-  "query": "what are the benefits of intermittent fasting",
-  "ai_overview": {
-    "is_present": true,
-    "text": "Intermittent fasting has several health benefits...",
-    "bullets": [
-      "Weight loss and visceral fat reduction",
-      "Improved insulin sensitivity",
-      "Cellular repair processes (autophagy)"
-    ],
-    "markdown": "Intermittent fasting has several health benefits...",
-    "sources": [
-      {
-        "index": 1,
-        "title": "Healthline: 10 Evidence-Based Health Benefits of Intermittent Fasting",
-        "url": "https://www.healthline.com/nutrition/10-health-benefits-of-intermittent-fasting",
-        "domain": "healthline.com"
-      }
-    ]
-  },
-  "search_metadata": {
-    "status_code": 200,
-    "search_url": "https://www.google.com/search?q=what+are+the+benefits+of+intermittent+fasting&hl=en&gl=us",
-    "timing_ms": 342
-  }
-}
-```
-
-### `POST /v1/scrape/batch`
-Asynchronous batch processing for high-volume jobs (up to 1,000 queries per batch).
-```json
-// Request
-{
-  "queries": [
-    "benefits of green tea",
-    "how to train for a half marathon",
-    "what is quantum computing"
-  ]
-}
-
-// Response (HTTP 202)
-{
-  "job_id": "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
-  "status": "pending",
-  "total": 3,
-  "message": "Batch scrape job queued successfully"
+Weight and fat loss: Shortening eating windows often lowers overall calorie intake without strict calorie counting, while shifting the body toward fat burning once sugar stores drop.
+Blood sugar and insulin: Fasting periods can lower insulin levels, improve insulin sensitivity, and reduce blood sugar spikes and crashes.
+Heart health: Studies show reductions in blood pressure and improvements in resting heart rate and cholesterol levels, especially when paired with earlier-day eating.",
+  "bullet_points": [
+    "Weight and fat loss: Shortening eating windows often lowers overall calorie intake without strict calorie counting, while shifting the body toward fat burning once sugar stores drop.",
+    "Blood sugar and insulin: Fasting periods can lower insulin levels, improve insulin sensitivity, and reduce blood sugar spikes and crashes.",
+    "Heart health: Studies show reductions in blood pressure and improvements in resting heart rate and cholesterol levels, especially when paired with earlier-day eating."
+  ],
+  "sources_count": 7,
+  "sources": [
+    {
+      "index": 1,
+      "title": "Mayo Clinic",
+      "url": "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/expert-answers/intermittent-fasting/faq-20441303",
+      "domain": "www.mayoclinic.org"
+    },
+    {
+      "index": 2,
+      "title": "Johns Hopkins Medicine",
+      "url": "https://www.hopkinsmedicine.org/health/expert-qa/intermittent-fasting-what-is-it-and-how-does-it-work",
+      "domain": "www.hopkinsmedicine.org"
+    },
+    {
+      "index": 3,
+      "title": "Harvard T.H. Chan School of Public Health",
+      "url": "https://hsph.harvard.edu/news/the-health-benefits-of-intermittent-fasting/",
+      "domain": "hsph.harvard.edu"
+    }
+  ],
+  "status_code": 200,
+  "timing_ms": 20562
 }
 ```
 
-### `GET /v1/jobs/{job_id}`
-Poll results of a batch scrape job.
+---
+
+## ⚡ Standby Mode (Real-Time Web API with Smart Auto-Sleep)
+
+This Actor supports **Apify Standby Mode**. When enabled:
+- The container remains warm in the background ready to answer queries in **< 1 second**.
+- **Smart Idle Timeout (`idleTimeoutSecs: 90`):** Automatically shuts down after 90 seconds of inactivity, guaranteeing you never pay for unused idle compute credits!
+- You can send HTTP requests directly to the Actor's web server URL with **sub-second latency**:
+  ```bash
+  curl -X POST "https://krawlo--google-ai-overview-scraper.apify.actor/v1/scrape"     -H "Content-Type: application/json"     -d '{"query": "best programming languages 2026"}'
+  ```
+
+---
+
+## 🤝 Support & Feature Requests
+
+Need a dedicated quota, custom extraction rules, or assistance setting up automation?  
+Reach out via the **Apify Actor discussion tab** or open an issue on the repository: [https://github.com/krawlo/google-ai-overview-scraper](https://github.com/krawlo/google-ai-overview-scraper).
